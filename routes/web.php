@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TarefaController;
+use App\Mail\MensagemTesteMail;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +19,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::resource('tarefa', TarefaController::class);
+
+Route::get('/mensagem-teste', function() {
+    //return new MensagemTesteMail();
+    Mail::to('saviofg1@hotmail.com')->send(new MensagemTesteMail());
+    return 'Email enviado com sucesso';
 });
