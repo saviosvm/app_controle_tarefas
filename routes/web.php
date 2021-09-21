@@ -28,7 +28,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('tarefa', TarefaController::class);
 
 Route::get('/mensagem-teste', function() {
-    //return new MensagemTesteMail();
-    Mail::to('saviofg1@hotmail.com')->send(new MensagemTesteMail());
-    return 'Email enviado com sucesso';
+    return new MensagemTesteMail();
+    //Mail::to('saviofg1@hotmail.com')->send(new MensagemTesteMail());
+   // return 'Email enviado com sucesso';
 });
