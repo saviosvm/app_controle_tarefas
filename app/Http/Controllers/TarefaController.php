@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NovaTarefaMail;
 use App\Models\Tarefa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;  // tive que importar para resolver o problema
+
+
 
 class TarefaController extends Controller
 {
 
-    public function __construct(){
-       $this->middleware('auth');
+    public function __construct()
+    {
+        $this->middleware('auth');
     }
 
     /**
@@ -40,7 +45,7 @@ class TarefaController extends Controller
             return 'Você não está logado no sistema';
         }
         */
-/*
+        /*
         if(Auth::check()){
             $id = Auth::user()->id;
             $nome = Auth::user()->name;
@@ -52,8 +57,6 @@ class TarefaController extends Controller
             return 'Você não está logado no sistema';
         }
         */
-
-       
     }
 
     /**
@@ -63,7 +66,8 @@ class TarefaController extends Controller
      */
     public function create()
     {
-        //
+
+        return view('tarefa.create');
     }
 
     /**
@@ -74,7 +78,19 @@ class TarefaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // $dados = $request->all();
+        //  $dados['user_id'] = auth()->user()->id;
+
+        $tarefas = new Tarefa();
+        $tarefas->tarefa = $request->input('tarefa');
+        $tarefas->data_limite_conclusao = $request->input('data_limite_conclusao');
+        $tarefas->user_id = auth()->user()->id;
+        $tarefas->save();
+
+        $destinatario = auth()->user()->email;
+        Mail::to($destinatario)->send(new NovaTarefaMail($tarefas));
+
+        return redirect()->route('tarefa.show', ['tarefa' => $tarefas->id]);
     }
 
     /**
@@ -85,7 +101,8 @@ class TarefaController extends Controller
      */
     public function show(Tarefa $tarefa)
     {
-        //
+
+        return view('tarefa.show', ['tarefa' => $tarefa]);
     }
 
     /**
